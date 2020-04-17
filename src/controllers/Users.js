@@ -14,8 +14,8 @@ class User {
                 const users = db.collection("users");
                 const user = await users.findOne({ correo: authData.correo});
                 const { fullNombre, gustos, correo } = user;
-                console.log(authData);
                 resolver(200, {fullNombre, gustos, correo, ...authData}, res);
+                console.log(req.body.token);
             }
         })
     }
@@ -61,7 +61,7 @@ class User {
     static async Login(req, res) {
         const users = db.collection("users");
         const usuario = await users.findOne({ correo: req.body.correo }).then(e=> e);
-        if(usuario.length === 0){
+        if(usuario === null){
             resolver(400, "No existe cuenta asociada al correo",res);
         }else{
             if(usuario.clave == req.body.clave){
