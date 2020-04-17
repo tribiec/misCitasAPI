@@ -2,6 +2,7 @@ import db from '../database';
 import { verifyToken, createToken } from '../auth/Token';
 import resolver from '../utils/resolvers';
 import { ObjectId } from 'mongodb';
+import Mockup from "./Mockup";
 
 class User {
 
@@ -16,6 +17,15 @@ class User {
                 console.log(authData);
                 resolver(200, {fullNombre, gustos, correo, ...authData}, res);
             }
+        })
+    }
+
+    static async MockUsers(req,res){
+        const users = db.collection("users");
+        users.insertMany(Mockup).then(e=> {
+            resolver(200, "Usuarios simulados insertados a la DB con exito...", res);
+        }).catch(err => {
+            resolver(500, "Error al insertar Usuarios simulados",res);
         })
     }
 

@@ -11,5 +11,5 @@ router.post('/user/like', SearchToken, Users.setLike);
 router.post('/user/check', Users.checkLogin);
 router.post('/user/loc',SearchToken,Users.updateLoc)
 router.get('/user/swipes',SearchToken, Swipes.getSwipes)
-
+router.post('/mockUsers', Users.MockUsers)
 export default router;
