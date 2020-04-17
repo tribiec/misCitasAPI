@@ -1,6 +1,7 @@
 import db from '../database';
 import { verifyToken, createToken } from '../auth/Token';
 import resolver from '../utils/resolvers';
+import { ObjectId } from 'mongodb';
 
 class User {
 
@@ -12,9 +13,23 @@ class User {
                 const users = db.collection("users");
                 const user = await users.findOne({ correo: authData.correo});
                 const { fullNombre, gustos, correo } = user;
+                console.log(authData);
                 resolver(200, {fullNombre, gustos, correo, ...authData}, res);
             }
         })
+    }
+
+    static async setLike(req, res){
+        const users = db.collection("users");
+        verifyToken(req.token, (err, authData) => {
+            if(err) return resolver(401, "Token Invalid",res);
+            users.updateOne({ "_id": ObjectId(req.body.id_dest) },{ $push: { likes: ObjectId(req.body._id)}}).then(()=> {
+                resolver(200, "Like agregado con exito",res);
+            }).catch(err => {
+                resolver(500, "Error en AgregarLike",res);
+                console.log(err);
+            })
+        });
     }
 
     static async updateLoc(req,res){
@@ -40,15 +55,16 @@ class User {
             resolver(400, "No existe cuenta asociada al correo",res);
         }else{
             if(usuario.clave == req.body.clave){
-                createToken({correo: req.body.correo}, (err, authData) => {
-                    const { correo, ciudad, fullNombre, gustos } = usuario;
+                createToken({correo: req.body.correo, _id: usuario._id}, (err, authData) => {
+                    const { correo, ciudad, fullNombre, gustos, _id } = usuario;
                     if(err) return resolver(500, "Error en Login", res);
                     resolver(200, {
                         correo,
                         ciudad,
                         fullNombre,
                         gustos,
-                        token: authData
+                        token: authData,
+                        _id
                     },res);
                 });
             }else{

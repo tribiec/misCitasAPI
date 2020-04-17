@@ -7,7 +7,9 @@ const router = express.Router();
 router.post('/register',Users.Register)
 router.get('/users',Users.getUsers)
 router.post('/login', Users.Login)
+router.post('/user/like', SearchToken, Users.setLike);
 router.post('/user/check', Users.checkLogin);
 router.post('/user/loc',SearchToken,Users.updateLoc)
 router.get('/user/swipes',SearchToken, Swipes.getSwipes)
+
 export default router;
