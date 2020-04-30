@@ -1,7 +1,7 @@
 import express from "express";
 import Users from "../controllers/Users";
 import Swipes from "../controllers/Swipes";
-import SearchToken from "../middlewares/Searchtoken";
+import SearchToken from "../middlewares/SearchToken";
 const router = express.Router();
 
 router.post('/register',Users.Register)
